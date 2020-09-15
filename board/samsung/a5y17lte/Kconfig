@@ -1,0 +1,18 @@
+if TARGET_A5Y17LTE
+
+config SYS_BOARD
+	default "a5y17lte"
+	help
+	  a5y17lte is a production board for SM-A520F phone on Exynos7880 SoC.
+
+config SYS_VENDOR
+	default "samsung"
+
+config SYS_CONFIG_NAME
+	default "a5y17lte"
+
+config EXYNOS7880
+    bool "Exynos 7880 SOC support"
+    default "y"
+
+endif

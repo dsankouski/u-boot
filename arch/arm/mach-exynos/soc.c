@@ -10,7 +10,7 @@
 #include <asm/io.h>
 #include <asm/system.h>
 
-#ifdef CONFIG_TARGET_ESPRESSO7420
+#if defined(CONFIG_TARGET_ESPRESSO7420) || defined(CONFIG_TARGET_A5Y17LTE)
 /*
  * Exynos7420 uses CPU0 of Cluster-1 as boot CPU. Due to this, branch_if_master
  * fails to identify as the boot CPU as the master CPU. As temporary workaround,

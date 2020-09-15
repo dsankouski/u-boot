@@ -37,7 +37,6 @@ config ARCH_EXYNOS5
 config ARCH_EXYNOS7
 	bool "Exynos7 SoC family"
 	select ARM64
-	select BOARD_EARLY_INIT_F
 	select BLK
 	select DM_MMC
 	help
@@ -151,6 +150,15 @@ config  TARGET_ESPRESSO7420
 	select PINCTRL_EXYNOS7420
 	select SUPPORT_SPL
 
+config  TARGET_A5Y17LTE
+	bool "Samsung SM-A520F board"
+	select ARM64
+	select CLK_EXYNOS
+	select OF_CONTROL
+	select PINCTRL
+	select PINCTRL_EXYNOS7880
+	select SUPPORT_SPL
+
 endchoice
 endif
 
@@ -167,6 +175,7 @@ source "board/samsung/arndale/Kconfig"
 source "board/samsung/smdk5250/Kconfig"
 source "board/samsung/smdk5420/Kconfig"
 source "board/samsung/espresso7420/Kconfig"
+source "board/samsung/a5y17lte/Kconfig"
 
 config SPL_LDSCRIPT
 	default "board/samsung/common/exynos-uboot-spl.lds" if ARCH_EXYNOS5 || ARCH_EXYNOS4
