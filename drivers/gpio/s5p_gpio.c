@@ -90,6 +90,7 @@ static void s5p_gpio_set_value(struct s5p_gpio_bank *bank, int gpio, int en)
 	if (en)
 		value |= DAT_SET(gpio);
 	writel(value, &bank->dat);
+    debug("set gpio %x value: %x, address: %x\n", gpio, en, &bank->dat);
 }
 
 #ifdef CONFIG_SPL_BUILD
@@ -105,7 +106,8 @@ int gpio_set_value(unsigned gpio, int value)
 static int s5p_gpio_get_cfg_pin(struct s5p_gpio_bank *bank, int gpio)
 {
 	unsigned int value;
-
+    debug("reading address: %x", &bank->con);
+	debug("bank->con is: %x", bank->con);
 	value = readl(&bank->con);
 	value &= CON_MASK(gpio);
 	return CON_SFR_UNSHIFT(value, gpio);
@@ -116,6 +118,7 @@ static unsigned int s5p_gpio_get_value(struct s5p_gpio_bank *bank, int gpio)
 	unsigned int value;
 
 	value = readl(&bank->dat);
+    debug("get gpio %x address: %x value: %x, mask: %x result: %x\n", gpio, &bank->dat, value, DAT_MASK(gpio), !!(value & DAT_MASK(gpio)));
 	return !!(value & DAT_MASK(gpio));
 }
 #endif /* CONFIG_SPL_BUILD */
@@ -358,6 +361,7 @@ static const struct udevice_id exynos_gpio_ids[] = {
 	{ .compatible = "samsung,exynos4x12-pinctrl" },
 	{ .compatible = "samsung,exynos5250-pinctrl" },
 	{ .compatible = "samsung,exynos5420-pinctrl" },
+	{ .compatible = "samsung,exynos7880-gpio" },
 	{ }
 };
 

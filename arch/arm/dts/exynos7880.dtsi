@@ -8,6 +8,7 @@
 /dts-v1/;
 #include "skeleton.dtsi"
 #include "exynos7880-pinctrl.dtsi"
+#include "exynos7880-gpio.dtsi"
 / {
 	compatible = "samsung,exynos7880";
 
@@ -78,6 +79,51 @@
 	/* TOP */
     pinctrl_6: pinctrl@139B0000 {
     	compatible = "samsung,exynos7880-pinctrl";
+    	reg = <0x139B0000 0x1000>;
+    	interrupts = <0 438 0>;
+    };
+
+    /*TODO: reduce duplication with pinctrl*/
+    /* ALIVE */
+    gpio_0: gpio@139F0000 {
+        compatible = "samsung,exynos7880-gpio";
+        reg = <0x139F0000 0x1000>;
+        interrupts = <0 0 0>, <0 1 0>, <0 2 0>, <0 3 0>,
+        		<0 4 0>, <0 5 0>, <0 6 0>, <0 7 0>,
+        		<0 8 0>, <0 9 0>, <0 10 0>, <0 11 0>,
+        		<0 12 0>, <0 13 0>, <0 14 0>, <0 15 0>;
+        wakeup-interrupt-controller {
+        	compatible = "samsung,exynos4210-wakeup-eint";
+        	interrupt-parent = <&gic>;
+        	interrupts = <0 16 0>;
+        	samsung,eint-flt-conf;
+        };
+    };
+
+    /* CCORE */
+	gpio_1: gpio@10630000 {
+		compatible = "samsung,exynos7880-gpio";
+		reg = <0x10630000 0x1000>;
+		interrupts = <0 327 0>;
+	};
+
+    /* DISP/AUD */
+	gpio_2: gpio@148C0000 {
+		compatible = "samsung,exynos7880-gpio";
+		reg = <0x148C0000 0x1000>;
+		interrupts = <0 68 0>;
+	};
+
+	/* FSYS0 */
+	gpio_4: gpio@13750000 {
+		compatible = "samsung,exynos7880-gpio";
+		reg = <0x13750000 0x1000>;
+		interrupts = <0 250 0>;
+	};
+
+	/* TOP */
+    gpio_6: gpio@139B0000 {
+    	compatible = "samsung,exynos7880-gpio";
     	reg = <0x139B0000 0x1000>;
     	interrupts = <0 438 0>;
     };
