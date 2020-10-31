@@ -4,6 +4,7 @@
  * Copyright (C) 2016 Samsung Electronics
  * Thomas Abraham <thomas.ab@samsung.com>
  */
+#define DEBUG
 
 #include <log.h>
 #include <common.h>
@@ -89,7 +90,7 @@ int exynos_pinctrl_set_state(struct udevice *dev, struct udevice *config)
 	unsigned int pinfunc, pinpud, pindrv;
 	unsigned long reg, value;
 	const char *name;
-
+    debug("exynos_pinctrl_set_state\n");
 	/*
 	 * refer to the following document for the pinctrl bindings
 	 * linux/Documentation/devicetree/bindings/pinctrl/samsung-pinctrl.txt
@@ -103,10 +104,13 @@ int exynos_pinctrl_set_state(struct udevice *dev, struct udevice *config)
 	pindrv = fdtdec_get_int(fdt, node, "samsung,pin-drv", -1);
 
 	for (idx = 0; idx < count; idx++) {
+	    debug("Setting pin with id: %d\n", idx);
 		name = fdt_stringlist_get(fdt, node, "samsung,pins", idx, NULL);
 		if (!name)
 			continue;
 		reg = pin_to_bank_base(dev, name, &pin_num);
+	    debug("Reg is: %x\n", reg);
+	    debug("pin num  is: %d\n", pin_num);
 
 		if (pinfunc != -1) {
 			value = readl(reg + PIN_CON);
