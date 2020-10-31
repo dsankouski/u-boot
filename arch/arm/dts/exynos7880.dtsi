@@ -22,6 +22,8 @@
 		compatible = "samsung,exynos4210-uart";
 		reg = <0x13820000 0x100>;
 		u-boot,dm-pre-reloc;
+		pinctrl-names = "default";
+        pinctrl-0 = <&uart2_bus>;
 	};
 
 	gic:interrupt-controller@106E1000 {
