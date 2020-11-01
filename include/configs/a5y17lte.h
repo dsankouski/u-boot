@@ -21,6 +21,7 @@
 
 /* select serial console configuration */
 #define CONFIG_DEFAULT_CONSOLE	"console=ttySAC2,115200n8\0"
+#define CONFIG_DEBUG_UART_CLOCK	132710400
 
 /* DRAM Memory Banks */
 #define SDRAM_BANK_SIZE		(256UL << 20UL)	/* 256 MB */

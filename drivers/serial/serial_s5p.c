@@ -73,39 +73,39 @@ static void __maybe_unused s5p_serial_init(struct s5p_uart *uart)
 static void __maybe_unused s5p_serial_baud(struct s5p_uart *uart, uint uclk,
 					   int baudrate)
 {
-//	u32 val;
-//
-//	val = uclk / baudrate;
-//
-//	writel(val / 16 - 1, &uart->ubrdiv);
-//
-//	if (s5p_uart_divslot())
-//		writew(udivslot[val % 16], &uart->rest.slot);
-//	else
-//		writeb(val % 16, &uart->rest.value);
+	u32 val;
+
+	val = uclk / baudrate;
+
+	writel(val / 16 - 1, &uart->ubrdiv);
+
+	if (s5p_uart_divslot())
+		writew(udivslot[val % 16], &uart->rest.slot);
+	else
+		writeb(val % 16, &uart->rest.value);
 }
 
 #ifndef CONFIG_SPL_BUILD
 int s5p_serial_setbrg(struct udevice *dev, int baudrate)
 {
-//	struct s5p_serial_platdata *plat = dev->platdata;
-//	struct s5p_uart *const uart = plat->reg;
-//	u32 uclk;
-//
-//#ifdef CONFIG_CLK_EXYNOS
-//	struct clk clk;
-//	u32 ret;
-//
-//	ret = clk_get_by_index(dev, 1, &clk);
-//	if (ret < 0)
-//		return ret;
-//	uclk = clk_get_rate(&clk);
-//#else
-//	uclk = get_uart_clk(plat->port_id);
-//#endif
-//
-//	s5p_serial_baud(uart, uclk, baudrate);
-//
+	struct s5p_serial_platdata *plat = dev->platdata;
+	struct s5p_uart *const uart = plat->reg;
+	u32 uclk;
+
+#ifdef CONFIG_CLK_EXYNOS
+	struct clk clk;
+	u32 ret;
+
+	ret = clk_get_by_index(dev, 1, &clk);
+	if (ret < 0)
+		return ret;
+	uclk = clk_get_rate(&clk);
+#else
+	uclk = get_uart_clk(plat->port_id);
+#endif
+
+	s5p_serial_baud(uart, uclk, baudrate);
+
 	return 0;
 }
 
