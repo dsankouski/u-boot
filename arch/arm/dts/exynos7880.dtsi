@@ -50,6 +50,30 @@
 		interrupts = <1 9 0xf04>;
 	};
 
+	gpioi2c0: i2c-0 {
+    	#address-cells = <1>;
+    	#size-cells = <0>;
+    	compatible = "i2c-gpio";
+    	status = "disabled";
+    	gpios = <
+           	&gpc1_gpio 0 0 /* sda */
+    	    &gpc1_gpio 1 0 /* scl */
+        >;
+    	i2c-gpio,delay-us = <5>;
+    };
+
+    gpiohsi2c0: hsi2c-0 {
+    	#address-cells = <1>;
+    	#size-cells = <0>;
+    	compatible = "i2c-gpio";
+    	status = "disabled";
+    	gpios = <
+    	    &gpm0_gpio 0 0 /* sda */
+    	    &gpm0_gpio 1 0 /* scl */
+    	>;
+    	i2c-gpio,delay-us = <5>;
+    };
+
     /* ALIVE */
     pinctrl_0: pinctrl@139F0000 {
         compatible = "samsung,exynos7880-pinctrl";

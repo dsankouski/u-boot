@@ -19,6 +19,14 @@
     };
 };
 
+&gpioi2c0 {
+    status = "okay";
+};
+
+&gpiohsi2c0 {
+    status = "okay";
+};
+
 &fin_pll {
 	clock-frequency = <26000000>;
 };
