@@ -663,7 +663,8 @@ int dm_gpio_set_dir_flags(struct gpio_desc *desc, ulong flags)
 		return ret;
 
 	/* combine the requested flags (for IN/OUT) and the descriptor flags */
-	flags |= desc->flags;
+//  this breaks i2c-gpio driver
+//	flags |= desc->flags;
 	ret = _dm_gpio_set_dir_flags(desc, flags);
 
 	return ret;
