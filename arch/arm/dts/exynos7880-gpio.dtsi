@@ -13,17 +13,17 @@
 / {
     /* ALIVE */
 	gpio@139F0000 {
-		etc0 {
+		etc0_gpio: etc0 {
 			gpio-controller;
 			#gpio-cells = <2>;
 		};
 
-		etc1 {
+		etc1_gpio: etc1 {
 			gpio-controller;
 			#gpio-cells = <2>;
 		};
 
-		gpa0 {
+		gpa0_gpio: gpa0 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
@@ -35,7 +35,7 @@
 		};
 
 
-		gpa1 {
+		gpa1_gpio: gpa1 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
@@ -46,7 +46,7 @@
 				     <0 12 0>, <0 13 0>, <0 14 0>, <0 15 0>;
 		};
 
-		gpa2 {
+		gpa2_gpio: gpa2 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
@@ -54,7 +54,7 @@
 			#interrupt-cells = <2>;
 		};
 
-		gpa3 {
+		gpa3_gpio: gpa3 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
@@ -62,7 +62,7 @@
 			#interrupt-cells = <2>;
 		};
 
-		gpq0 {
+		gpq0_gpio: gpq0 {
 			gpio-controller;
 			#gpio-cells = <2>;
 		};
@@ -70,7 +70,7 @@
 
     /* CCORE */
     gpio@10630000 {
-		gpm0 {
+		gpm0_gpio: gpm0 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
@@ -81,7 +81,7 @@
 
 	/* DISP/AUD */
 	gpio@148C0000 {
-		gpz0 {
+		gpz0_gpio: gpz0 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
@@ -89,7 +89,7 @@
 			#interrupt-cells = <2>;
 		};
 
-		gpz1 {
+		gpz1_gpio: gpz1 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
@@ -97,7 +97,7 @@
 			#interrupt-cells = <2>;
 		};
 
-		gpz2 {
+		gpz2_gpio: gpz2 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
@@ -108,7 +108,7 @@
 
     /* FSYS0 */
 	gpio@13750000 {
-        gpr0 {
+        gpr0_gpio: gpr0 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
@@ -116,7 +116,7 @@
 			#interrupt-cells = <2>;
 		};
 
-		gpr1 {
+		gpr1_gpio: gpr1 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
@@ -124,7 +124,7 @@
 			#interrupt-cells = <2>;
 		};
 
-		gpr2 {
+		gpr2_gpio: gpr2 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
@@ -132,7 +132,7 @@
 			#interrupt-cells = <2>;
 		};
 
-		gpr3 {
+		gpr3_gpio: gpr3 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
@@ -140,7 +140,7 @@
 			#interrupt-cells = <2>;
 		};
 
-		gpr4 {
+		gpr4_gpio: gpr4 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
@@ -151,7 +151,7 @@
 
     /* TOP */
 	gpio@139B0000 {
-		gpb0 {
+		gpb0_gpio: gpb0 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
@@ -159,7 +159,7 @@
 			#interrupt-cells = <2>;
 		};
 
-		gpc0 {
+		gpc0_gpio: gpc0 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
@@ -167,7 +167,7 @@
 			#interrupt-cells = <2>;
 		};
 
-		gpc1 {
+		gpc1_gpio: gpc1 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
@@ -175,7 +175,7 @@
 			#interrupt-cells = <2>;
 		};
 
-		gpc4 {
+		gpc4_gpio: gpc4 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
@@ -183,7 +183,7 @@
 			#interrupt-cells = <2>;
 		};
 
-		gpc5 {
+		gpc5_gpio: gpc5 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
@@ -191,7 +191,7 @@
 			#interrupt-cells = <2>;
 		};
 
-		gpc6 {
+		gpc6_gpio: gpc6 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
@@ -199,7 +199,7 @@
 			#interrupt-cells = <2>;
 		};
 
-		gpc8 {
+		gpc8_gpio: gpc8 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
@@ -207,7 +207,7 @@
 			#interrupt-cells = <2>;
 		};
 
-		gpc9 {
+		gpc9_gpio: gpc9 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
@@ -215,7 +215,7 @@
 			#interrupt-cells = <2>;
 		};
 
-		gpd1 {
+		gpd1_gpio: gpd1 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
@@ -223,7 +223,7 @@
 			#interrupt-cells = <2>;
 		};
 
-		gpd2 {
+		gpd2_gpio: gpd2 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
@@ -231,7 +231,7 @@
 			#interrupt-cells = <2>;
 		};
 
-		gpd3 {
+		gpd3_gpio: gpd3 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
@@ -239,7 +239,7 @@
 			#interrupt-cells = <2>;
 		};
 
-		gpd4 {
+		gpd4_gpio: gpd4 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
@@ -247,7 +247,7 @@
 			#interrupt-cells = <2>;
 		};
 
-		gpd5 {
+		gpd5_gpio: gpd5 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
@@ -255,7 +255,7 @@
 			#interrupt-cells = <2>;
 		};
 
-		gpe0 {
+		gpe0_gpio: gpe0 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
@@ -263,7 +263,7 @@
 			#interrupt-cells = <2>;
 		};
 
-		gpf0 {
+		gpf0_gpio: gpf0 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
@@ -271,7 +271,7 @@
 			#interrupt-cells = <2>;
 		};
 
-		gpf1 {
+		gpf1_gpio: gpf1 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
@@ -279,7 +279,7 @@
 			#interrupt-cells = <2>;
 		};
 
-		gpf2 {
+		gpf2_gpio: gpf2 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
@@ -287,7 +287,7 @@
 			#interrupt-cells = <2>;
 		};
 
-		gpf3 {
+		gpf3_gpio: gpf3 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
@@ -295,7 +295,7 @@
 			#interrupt-cells = <2>;
 		};
 
-		gpf4 {
+		gpf4_gpio: gpf4 {
 			gpio-controller;
 			#gpio-cells = <2>;
 
