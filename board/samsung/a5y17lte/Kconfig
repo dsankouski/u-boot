@@ -13,6 +13,20 @@ config SYS_CONFIG_NAME
 
 config EXYNOS7880
     bool "Exynos 7880 SOC support"
-    default "y"
+    default y
+
+config MUIC_MANUAL_SWITCH
+    bool "Enable manual control over muic mux usb D+ D- pins"
+    select USE_PREBOOT
+    select CMD_GPIO
+    select CMD_I2C
+    select DM_I2C_GPIO
+    select HUSH_PARSER
+    default n
+    help
+      Allows to configure muic to multiplex uart to usb data lines manually. Tx is D- Rx is D+.
+      Caution! Do NOT connect usb host, while uart multiplexed, this will damage your device!
+
+      Say no, if unsure.
 
 endif

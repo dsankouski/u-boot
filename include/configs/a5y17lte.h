@@ -26,4 +26,27 @@
 /* DRAM Memory Banks */
 #define SDRAM_BANK_SIZE		(256UL << 20UL)	/* 256 MB */
 
+#ifdef CONFIG_MUIC_MANUAL_SWITCH
+#define CONFIG_PREBOOT \
+"echo Check pressed buttons match uart on usb combination...;" \
+"KEY_VOLUMEUP=gpa20;" \
+"KEY_HOME=gpa17;" \
+"KEY_VOLUMEDOWN=gpa21;" \
+"KEY_POWER=gpa00;" \
+"PRESSED=0;" \
+"RELEASED=1;" \
+"if gpio input $KEY_VOLUMEUP; then setenv VOLUME_UP $PRESSED; else setenv VOLUME_UP $RELEASED; fi;" \
+"if gpio input $KEY_VOLUMEDOWN; then setenv VOLUME_DOWN $PRESSED; else setenv VOLUME_DOWN $RELEASED; fi;" \
+"if gpio input $KEY_HOME; then setenv HOME $PRESSED; else setenv HOME $RELEASED; fi;" \
+"if gpio input $KEY_POWER; then setenv POWER $PRESSED; else setenv POWER $RELEASED; fi;" \
+"if test " \
+"$VOLUME_UP -eq $PRESSED " \
+"&& test $VOLUME_DOWN -eq $PRESSED " \
+"&& test $HOME -eq $RELEASED " \
+"&& test $POWER -eq $RELEASED; " \
+"then run connect_uart_usb; else " \
+"echo pressed buttons does not match;" \
+"fi;"
+#endif
+
 #endif	/* __CONFIG_A5Y17LTE_H */

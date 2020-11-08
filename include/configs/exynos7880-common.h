@@ -91,9 +91,47 @@
 #define EXYNOS_FDTFILE_SETTING
 #endif
 
-#define CONFIG_EXTRA_ENV_SETTINGS \
+#define EXTRA_ENV_SETTINGS \
 	EXYNOS_DEVICE_SETTINGS \
 	EXYNOS_FDTFILE_SETTING \
 	MEM_LAYOUT_ENV_SETTINGS
+
+#ifdef CONFIG_MUIC_MANUAL_SWITCH
+#define MUIC_DEFINITIONS \
+"I2C_MUIC_BUS_NUM=0\0" \
+"I2C_MUIC_ADDR=0x3D\0" \
+"S2MU004_REG_MUIC_SW_CTRL=0xCA\0" \
+"MANUAL_SW_UART_VBUS_CLOSED=0x48\0" \
+"MANUAL_SW_OPEN=0x00\0" \
+"S2MU004_REG_MUIC_CTRL1=0xC7\0" \
+"MUIC_CTRL1_RAW_DATA_MAN_SWITCH=0x12\0" \
+"MUIC_CTRL1_INITIAL=0x17\0" \
+"BYTE_COUNT=1\0"
+
+#define MUIC_CONNECT_UART \
+"connect_uart_usb=" \
+    "echo connecting uart to usb signal lines...; " \
+    "i2c dev $I2C_MUIC_BUS_NUM; " \
+    "i2c mw $I2C_MUIC_ADDR $S2MU004_REG_MUIC_SW_CTRL $MANUAL_SW_UART_VBUS_CLOSED $BYTE_COUNT; " \
+    "i2c mw $I2C_MUIC_ADDR $S2MU004_REG_MUIC_CTRL1 $MUIC_CTRL1_RAW_DATA_MAN_SWITCH $BYTE_COUNT;" \
+    "echo uart connected to usb signal lines;" \
+    "echo CAUTON! Do NOT connect USB host before disconnecting uart ('run disconnect_uart_usb'), this will damage your device;\0"
+
+#define MUIC_DISCONNECT_UART \
+"disconnect_uart_usb=" \
+    "echo disconnecting uart from usb signal lines...; " \
+    "i2c dev $I2C_MUIC_BUS_NUM; " \
+    "i2c mw $I2C_MUIC_ADDR $S2MU004_REG_MUIC_SW_CTRL $MANUAL_SW_OPEN $BYTE_COUNT; " \
+    "i2c mw $I2C_MUIC_ADDR $S2MU004_REG_MUIC_CTRL1 $MUIC_CTRL1_INITIAL $BYTE_COUNT; " \
+    "echo uart disconnected from usb signal lines;\0"
+#define CONFIG_EXTRA_ENV_SETTINGS \
+	EXTRA_ENV_SETTINGS \
+    MUIC_DEFINITIONS \
+	MUIC_DISCONNECT_UART \
+	MUIC_CONNECT_UART
+#else
+#define CONFIG_EXTRA_ENV_SETTINGS \
+	EXTRA_ENV_SETTINGS
+#endif
 
 #endif	/* __CONFIG_EXYNOS7880_COMMON_H */
