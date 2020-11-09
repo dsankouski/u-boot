@@ -8,9 +8,7 @@
  * Copyright (C) 2016 Samsung Electronics
  * Thomas Abraham <thomas.ab@samsung.com>
  */
-#define DEBUG
 
-#include <log.h>
 #include <common.h>
 #include <dm.h>
 #include <errno.h>

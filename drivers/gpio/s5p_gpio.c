@@ -3,6 +3,7 @@
  * (C) Copyright 2009 Samsung Electronics
  * Minkyu Kang <mk7.kang@samsung.com>
  */
+#define DEBUG
 
 #include <common.h>
 #include <dm.h>
