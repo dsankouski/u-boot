@@ -1,0 +1,31 @@
+// SPDX-License-Identifier: GPL-2.0+
+/*
+ * Samsung Exynos7870 SoC device tree source
+ *
+ * Copyright (c) 2014 Samsung Electronics Co., Ltd.
+ *		http://www.samsung.com
+ * Copyright (c) 2020 Dzmitry Sankouski (dsankouski@gmail.com)
+ */
+
+/dts-v1/;
+#include "exynos7870.dtsi"
+/ {
+	compatible = "samsung,exynos7870";
+
+	aliases {
+    	console = &uart2;
+    };
+
+    chosen {
+        stdout-path = &uart2;
+    };
+};
+
+&gpioi2c1 {
+    status = "okay";
+};
+
+&fin_pll {
+	clock-frequency = <26000000>;
+};
+

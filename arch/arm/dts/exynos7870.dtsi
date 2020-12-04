@@ -1,0 +1,133 @@
+// SPDX-License-Identifier: GPL-2.0+
+/*
+ * Samsung Exynos7870 SoC device tree source
+ *
+ * Copyright (c) 2014 Samsung Electronics Co., Ltd.
+ *		http://www.samsung.com
+ * Copyright (c) 2020 Dzmitry Sankouski (dsankouski@gmail.com)
+ */
+
+/dts-v1/;
+#include "skeleton.dtsi"
+#include "exynos7870-pinctrl.dtsi"
+#include "exynos7870-gpio.dtsi"
+/ {
+	compatible = "samsung,exynos7870";
+
+	fin_pll: xxti {
+		compatible = "fixed-clock";
+		clock-output-names = "fin_pll";
+		u-boot,dm-pre-reloc;
+		#clock-cells = <0>;
+	};
+
+	/* Dummy clock for uart */
+	fin_uart: uart_dummy_fin {
+		compatible = "fixed-clock";
+		clock-output-names = "fin_uart";
+		clock-frequency = <132710400>;
+		u-boot,dm-pre-reloc;
+		#clock-cells = <0>;
+	};
+
+	uart2: serial@13820000 {
+		compatible = "samsung,exynos4210-uart";
+		reg = <0x13820000 0x100>;
+		u-boot,dm-pre-reloc;
+		clocks = <&fin_uart>, <&fin_uart>; // driver uses 1st clock
+		clock-names = "uart", "clk_uart_baud0";
+		pinctrl-names = "default";
+        pinctrl-0 = <&uart2_bus>;
+	};
+
+    gic:interrupt-controller@104E0000 {
+		compatible = "arm,cortex-a15-gic", "arm,cortex-a9-gic";
+		#interrupt-cells = <3>;
+		#address-cells = <0>;
+		interrupt-controller;
+		reg =	<0x0 0x104E1000 0x1000>,
+			<0x0 0x104E2000 0x1000>,
+			<0x0 0x104E4000 0x2000>,
+			<0x0 0x104E6000 0x2000>;
+		interrupts = <1 9 0xf04>;
+	};
+
+	gpioi2c1: i2c-1 {
+    	#address-cells = <1>;
+    	#size-cells = <0>;
+    	compatible = "i2c-gpio";
+    	status = "disabled";
+    	gpios = <
+           	&gpc1_gpio 2 0 /* sda */
+    	    &gpc1_gpio 3 0 /* scl */
+        >;
+    	i2c-gpio,delay-us = <5>;
+    };
+
+	/* ALIVE */
+	pinctrl_0: pinctrl@139F0000 {
+		compatible = "samsung,exynos7870-pinctrl";
+		reg = <0x139F0000 0x1000>;
+		interrupts = <0 0 0>, <0 1 0>, <0 2 0>, <0 3 0>,
+				<0 4 0>, <0 5 0>, <0 6 0>, <0 7 0>,
+				<0 8 0>, <0 9 0>, <0 10 0>, <0 11 0>,
+				<0 12 0>, <0 13 0>, <0 14 0>, <0 15 0>;
+		wakeup-interrupt-controller {
+			compatible = "samsung,exynos4210-wakeup-eint";
+			interrupt-parent = <&gic>;
+			interrupts = <0 16 0>;
+		};
+	};
+
+	/* DISPAUD */
+	pinctrl_1: pinctrl@148C0000 {
+		compatible = "samsung,exynos7870-pinctrl";
+		reg = <0x148C0000 0x1000>;
+		interrupts = <0 68 0>;
+	};
+
+    /* FSYS */
+	pinctrl_3: pinctrl@13750000 {
+		compatible = "samsung,exynos7870-pinctrl";
+		reg = <0x13750000 0x1000>;
+		interrupts = <0 250 0>;
+	};
+
+	/* TOP */
+    pinctrl_6: pinctrl@139B0000 {
+    	compatible = "samsung,exynos7870-pinctrl";
+    	reg = <0x139B0000 0x1000>;
+    	interrupts = <0 438 0>;
+    };
+
+    /*TODO: reduce duplication with pinctrl*/
+	/* ALIVE */
+	gpio_0: gpio@139F0000 {
+		compatible = "samsung,exynos7870-gpio";
+		reg = <0x139F0000 0x1000>;
+		interrupts = <0 0 0>, <0 1 0>, <0 2 0>, <0 3 0>,
+				<0 4 0>, <0 5 0>, <0 6 0>, <0 7 0>,
+				<0 8 0>, <0 9 0>, <0 10 0>, <0 11 0>,
+				<0 12 0>, <0 13 0>, <0 14 0>, <0 15 0>;
+		wakeup-interrupt-controller {
+			compatible = "samsung,exynos4210-wakeup-eint";
+			interrupt-parent = <&gic>;
+			interrupts = <0 16 0>;
+		};
+	};
+
+	/* DISPAUD */
+	gpio_1: gpio@148C0000 {
+		compatible = "samsung,exynos7870-gpio";
+		reg = <0x148C0000 0x1000>;
+		interrupts = <0 68 0>;
+	};
+
+
+	/* TOP */
+    gpio_6: gpio@139B0000 {
+    	compatible = "samsung,exynos7870-gpio";
+    	reg = <0x139B0000 0x1000>;
+    	interrupts = <0 438 0>;
+    };
+};
