@@ -1,0 +1,18 @@
+if TARGET_STARQLTECHN
+
+config SYS_BOARD
+	default "starqltechn"
+	help
+	  starqltechn is a production board for SM-A520F phone on Exynos7880 SoC.
+
+config SYS_VENDOR
+	default "samsung"
+
+config SYS_CONFIG_NAME
+	default "starqltechn"
+
+config SDM845
+    bool "Snapdragon 845 SOC support"
+    default "y"
+
+endif

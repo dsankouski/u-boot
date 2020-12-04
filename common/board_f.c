@@ -8,6 +8,7 @@
  * Sysgo Real-Time Solutions, GmbH <www.elinos.com>
  * Marius Groeger <mgroeger@sysgo.de>
  */
+#define DEBUG
 
 #include <common.h>
 #include <bloblist.h>
@@ -53,6 +54,7 @@
 #include <asm/sections.h>
 #include <dm/root.h>
 #include <linux/errno.h>
+#include <debug_uart.h>
 
 /*
  * Pointer to initial global data area
@@ -953,6 +955,10 @@ static const init_fnc_t init_sequence_f[] = {
 
 void board_init_f(ulong boot_flags)
 {
+    debug_uart_init();
+    while (true) {
+        printch('H');
+    }
 	gd->flags = boot_flags;
 	gd->have_console = 0;
 

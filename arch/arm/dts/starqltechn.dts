@@ -1,0 +1,63 @@
+/*
+ * Qualcomm APQ8096 based Dragonboard 820C board device tree source
+ *
+ * (C) Copyright 2017 Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
+ *
+ * SPDX-License-Identifier:	GPL-2.0+
+ */
+
+/dts-v1/;
+
+#include "skeleton64.dtsi"
+
+/ {
+	model = "Samsung S9 (SM-G9600)";
+	compatible = "qcom,sdm845-mtp", "qcom,sdm845", "qcom,mtp";
+	#address-cells = <2>;
+	#size-cells = <2>;
+
+	aliases {
+		serial0 = &blsp2_uart1;
+	};
+
+	chosen {
+		stdout-path = "serial0:115200n8";
+	};
+
+	memory {
+		device_type = "memory";
+		reg = <0 0x80000000 0 0xC0000000>;
+	};
+
+	psci {
+		compatible = "arm,psci-1.0";
+		method = "smc";
+	};
+
+	soc: soc {
+	    u-boot,dm-pre-reloc;
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges = <0 0 0 0xffffffff>;
+		compatible = "simple-bus";
+
+        blsp2_uart1: qcom,qup_uart@0xa84000 {
+            u-boot,dm-pre-reloc;
+		    compatible = "qcom,msm-uartdm-v1.4";
+		    //, "qcom,msm-uartdm";
+    		//compatible = "qcom,msm-geni-console", "qcom,msm-geni-uart";
+    		reg = <0xa84000 0x4000>;
+    		reg-names = "se_phys";
+    		//clock-names = "se-clk", "m-ahb", "s-ahb";
+    		//clocks = <0x21 0x58 0x21 0x68 0x21 0x69>;
+    		//pinctrl-names = "default", "sleep";
+    		//pinctrl-0 = <0x88>;
+    		//pinctrl-1 = <0x89>;
+    		//interrupts = <0x0 0x162 0x0>;
+    		qcom,wrapper-core = <0x8a>;
+    		status = "ok";
+    		//linux,phandle = <0x398>;
+    		//phandle = <0x398>;
+    	};
+	};
+};

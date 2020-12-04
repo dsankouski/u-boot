@@ -35,9 +35,20 @@ config TARGET_DRAGONBOARD820C
 	  - 3GiB RAM
 	  - 32GiB UFS drive
 
+config TARGET_STARQLTECHN
+	bool "Samsung SM-G9600(starqltechn)"
+	help
+	  Support for Samsung SM-G9600(starqltechn) board.
+	  Features:
+	  - Qualcomm Snapdragon SDM845 SoC
+	  - 4GiB RAM
+	  - 64GiB UFS drive
+	select LINUX_KERNEL_IMAGE_HEADER
+
 endchoice
 
 source "board/qualcomm/dragonboard410c/Kconfig"
 source "board/qualcomm/dragonboard820c/Kconfig"
+source "board/samsung/starqltechn/Kconfig"
 
 endif
