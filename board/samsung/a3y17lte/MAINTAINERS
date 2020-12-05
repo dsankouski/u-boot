@@ -1,0 +1,6 @@
+Samsung A5 2017 (A520F)(a3y17lte)  Board
+M:	Dzmitry Sankouski <dsankouski@gmail.com>
+S:	Maintained
+F:	board/samsung/a3y17lte/
+F:	include/configs/a3y17lte.h
+F:	configs/a3y17lte_defconfig

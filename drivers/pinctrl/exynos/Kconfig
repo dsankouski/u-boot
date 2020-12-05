@@ -9,6 +9,14 @@ config PINCTRL_EXYNOS7420
 	  Support pin multiplexing and pin configuration control on
 	  Samsung's Exynos7420 SoC.
 
+config PINCTRL_EXYNOS7870
+	bool "Samsung Exynos7870 pinctrl driver"
+	depends on ARCH_EXYNOS && PINCTRL_FULL
+	select PINCTRL_EXYNOS
+	help
+	  Support pin multiplexing and pin configuration control on
+	  Samsung's Exynos7870 SoC.
+
 config PINCTRL_EXYNOS7880
 	bool "Samsung Exynos7880 pinctrl driver"
 	depends on ARCH_EXYNOS && PINCTRL_FULL

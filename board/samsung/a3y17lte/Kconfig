@@ -1,0 +1,32 @@
+if TARGET_A3Y17LTE
+
+config SYS_BOARD
+	default "a3y17lte"
+	help
+	  a3y17lte is a production board for SM-A520F phone on Exynos7880 SoC.
+
+config SYS_VENDOR
+	default "samsung"
+
+config SYS_CONFIG_NAME
+	default "a3y17lte"
+
+config EXYNOS7870
+    bool "Exynos 7870 SOC support"
+    default y
+
+config MUIC_MANUAL_SWITCH
+    bool "Enable manual control over muic mux usb D+ D- pins"
+    select USE_PREBOOT
+    select CMD_GPIO
+    select CMD_I2C
+    select DM_I2C_GPIO
+    select HUSH_PARSER
+    default n
+    help
+      Allows to configure muic to multiplex uart to usb data lines manually. Tx is D- Rx is D+.
+      Caution! Do NOT connect usb host, while uart multiplexed, this will damage your device!
+
+      Say no, if unsure.
+
+endif

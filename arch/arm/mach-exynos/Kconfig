@@ -159,6 +159,15 @@ config  TARGET_A5Y17LTE
 	select PINCTRL_EXYNOS7880
 	select SUPPORT_SPL
 
+config  TARGET_A3Y17LTE
+	bool "Samsung SM-A320F board"
+	select ARM64
+	select CLK_EXYNOS
+	select OF_CONTROL
+	select PINCTRL
+	select PINCTRL_EXYNOS7870
+	select SUPPORT_SPL
+
 endchoice
 endif
 
@@ -176,6 +185,7 @@ source "board/samsung/smdk5250/Kconfig"
 source "board/samsung/smdk5420/Kconfig"
 source "board/samsung/espresso7420/Kconfig"
 source "board/samsung/a5y17lte/Kconfig"
+source "board/samsung/a3y17lte/Kconfig"
 
 config SPL_LDSCRIPT
 	default "board/samsung/common/exynos-uboot-spl.lds" if ARCH_EXYNOS5 || ARCH_EXYNOS4
