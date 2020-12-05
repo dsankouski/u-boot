@@ -52,14 +52,15 @@
 		interrupts = <1 9 0xf04>;
 	};
 
-	gpioi2c1: i2c-1 {
+    /* MUIC */
+	gpioi2c0: i2c-0 {
     	#address-cells = <1>;
     	#size-cells = <0>;
     	compatible = "i2c-gpio";
     	status = "disabled";
     	gpios = <
-           	&gpc1_gpio 2 0 /* sda */
-    	    &gpc1_gpio 3 0 /* scl */
+            &gpc1_gpio 0 0 /* sda */
+    	    &gpc1_gpio 1 0 /* scl */
         >;
     	i2c-gpio,delay-us = <5>;
     };

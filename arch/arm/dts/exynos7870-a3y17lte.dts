@@ -21,7 +21,7 @@
     };
 };
 
-&gpioi2c1 {
+&gpioi2c0 {
     status = "okay";
 };
 
