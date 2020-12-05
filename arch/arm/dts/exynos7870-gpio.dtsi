@@ -40,13 +40,6 @@
 				     <0 4 0>, <0 5 0>, <0 6 0>, <0 7 0>;
 		};
 
-		dwmmc2_cd_ext_irq: dwmmc2_cd_ext_irq {
-			samsung,pins = "gpa0-1";
-			samsung,pin-function = <0xf>;
-			samsung,pin-pud = <3>;
-			samsung,pin-drv = <4>;
-		};
-
 		gpa1_gpio: gpa1 {
 			gpio-controller;
 			#gpio-cells = <2>;
@@ -73,19 +66,6 @@
 			interrupt-controller;
 			#interrupt-cells = <2>;
 		};
-
-		/* UART_DEBUG */
-		uart2_bus: uart2-bus {
-			samsung,pins = "gpa1-1", "gpa1-0";
-			samsung,pin-function = <2>;
-			samsung,pin-pud = <0>;
-		};
-
-		uart2_sleep: uart2-sleep {
-			samsung,pins = "gpa1-1";
-			samsung,pin-function = <0>;
-			samsung,pin-pud = <1>;
-		};
 	};
 
 	pinctrl@148C0000 {
@@ -103,13 +83,6 @@
 
 			interrupt-controller;
 			#interrupt-cells = <2>;
-		};
-
-		i2s_pmic_bus: i2s-pmic-bus {
-			samsung,pins = "gpz1-0", "gpz1-2", "gpz1-3", "gpz1-4";
-			samsung,pin-function = <2>;
-			samsung,pin-pud = <3>;
-			samsung,pin-drv = <5>;
 		};
 	};
 	
@@ -257,33 +230,6 @@
 
 			interrupt-controller;
 			#interrupt-cells = <2>;
-		};
-
-		/* TE SIGNAL */
-		decon_te_on: decon_te_on {
-			samsung,pins = "gpe0-2";
-			samsung,pin-function = <2>;
-		};
-
-		decon_te_off: decon_te_off {
-			samsung,pins = "gpe0-2";
-			samsung,pin-function = <0>;
-		};
-
-		/* I2C_MUIC */
-		i2c1_bus: i2c1-bus {
-			samsung,pins = "gpc1-3", "gpc1-2";
-			samsung,pin-function = <2>;
-			samsung,pin-pud = <3>;
-			samsung,pin-drv = <0>;
-		};
-
-		/* I2C_FUELGAUGE */
-		i2c4_bus: i2c4-bus {
-			samsung,pins = "gpc4-1", "gpc4-0";
-			samsung,pin-function = <2>;
-			samsung,pin-pud = <3>;
-			samsung,pin-drv = <0>;
 		};
 	};
 };
