@@ -40,12 +40,12 @@ static struct samsung_pin_bank_data exynos7870_pin_banks2[] = {
 };
 
 /* pin banks of exynos7870 pin-controller 3 (FSYS) */
-static struct samsung_pin_bank exynos7870_pin_banks3[] = {
-         EXYNOS_PIN_BANK(3, 0x000, "gpr0"),
-         EXYNOS_PIN_BANK(8, 0x020, "gpr1"),
-         EXYNOS_PIN_BANK(2, 0x040, "gpr2"),
-         EXYNOS_PIN_BANK(4, 0x060, "gpr3"),
-         EXYNOS_PIN_BANK(6, 0x080, "gpr4"),
+static struct samsung_pin_bank_data exynos7870_pin_banks3[] = {
+    EXYNOS_PIN_BANK(3, 0x000, "gpr0"),
+    EXYNOS_PIN_BANK(8, 0x020, "gpr1"),
+    EXYNOS_PIN_BANK(2, 0x040, "gpr2"),
+    EXYNOS_PIN_BANK(4, 0x060, "gpr3"),
+    EXYNOS_PIN_BANK(6, 0x080, "gpr4"),
 };
 
 /* pin banks of exynos7870 pin-controller 6 (TOP) */

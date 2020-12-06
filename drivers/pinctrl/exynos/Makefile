@@ -5,4 +5,5 @@
 
 obj-$(CONFIG_PINCTRL_EXYNOS)		+= pinctrl-exynos.o
 obj-$(CONFIG_PINCTRL_EXYNOS7420)	+= pinctrl-exynos7420.o
+obj-$(CONFIG_PINCTRL_EXYNOS7870)	+= pinctrl-exynos7870.o
 obj-$(CONFIG_PINCTRL_EXYNOS7880)	+= pinctrl-exynos7880.o
