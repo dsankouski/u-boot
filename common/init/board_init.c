@@ -9,6 +9,7 @@
 #include <common.h>
 #include <bootstage.h>
 #include <init.h>
+#include <debug_uart.h>
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -76,6 +77,14 @@ __weak void board_init_f_init_stack_protection(void)
 
 ulong board_init_f_alloc_reserve(ulong top)
 {
+/*uart base is a84000*/
+//(3 << 8) /* clear tx ready irq*/
+    *(volatile unsigned char *)(0xa84040/*number of characters*/) = 0x1;
+    *(volatile unsigned char *)(0xa84100/*uart register to write characters*/) = 0x48; // print H letter
+
+    debug_uart_init();
+    printch('H');
+
 	/* Reserve early malloc arena */
 #if CONFIG_VAL(SYS_MALLOC_F_LEN)
 	top -= CONFIG_VAL(SYS_MALLOC_F_LEN);
