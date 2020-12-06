@@ -36,7 +36,7 @@
 
 #define CPU_RELEASE_ADDR		secondary_boot_addr
 
-#define CONFIG_NR_DRAM_BANKS 12
+#define CONFIG_NR_DRAM_BANKS 8
 
 #define PHYS_SDRAM_1		CONFIG_SYS_SDRAM_BASE
 #define PHYS_SDRAM_1_SIZE	SDRAM_BANK_SIZE
