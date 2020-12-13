@@ -40,10 +40,11 @@
 		#size-cells = <1>;
 		ranges = <0 0 0 0xffffffff>;
 		compatible = "simple-bus";
+/*
 
         blsp2_uart1: qcom,qup_uart@0xa84000 {
             u-boot,dm-pre-reloc;
-		    compatible = "qcom,msm-uartdm-v1.4";
+		    compatible = "qcom,msm-geni-uart";
 		    //, "qcom,msm-uartdm";
     		//compatible = "qcom,msm-geni-console", "qcom,msm-geni-uart";
     		reg = <0xa84000 0x4000>;
@@ -59,5 +60,6 @@
     		//linux,phandle = <0x398>;
     		//phandle = <0x398>;
     	};
+    	*/
 	};
 };
