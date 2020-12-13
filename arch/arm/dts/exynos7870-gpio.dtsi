@@ -12,7 +12,7 @@
 
 / {
 	/* ALIVE */
-	pinctrl@139F0000 {
+	gpio@139F0000 {
 		etc0_gpio: etc0 {
 			gpio-controller;
 			#gpio-cells = <2>;
@@ -68,7 +68,7 @@
 		};
 	};
 
-	pinctrl@148C0000 {
+	gpio@148C0000 {
 		gpz0_gpio: gpz0 {
 			gpio-controller;
 			#gpio-cells = <2>;
@@ -87,7 +87,7 @@
 	};
 	
     /* TOP */
-	pinctrl@139B0000 {
+	gpio@139B0000 {
 		gpb0_gpio: gpb0 {
 			gpio-controller;
 			#gpio-cells = <2>;
