@@ -22,7 +22,7 @@ static const char * const msm_pinctrl_pins[] = {
 };
 
 static const struct pinctrl_function msm_pinctrl_functions[] = {
-	{"blsp_uart8", 2},
+	{"qup9", 2},
 };
 
 static const char *sdm845_get_function_name(struct udevice *dev,

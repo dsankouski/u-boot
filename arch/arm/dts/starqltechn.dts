@@ -17,7 +17,7 @@
 	#size-cells = <2>;
 
 	aliases {
-		serial0 = &blsp2_uart1;
+		serial0 = &debug_uart;
 	};
 
 	chosen {
@@ -26,7 +26,7 @@
 
 	memory {
 		device_type = "memory";
-		reg = <0 0x80000000 0 0xC0000000>;
+		reg = <0 0x80000000 1 0x0>;
 	};
 
 	psci {
@@ -40,9 +40,8 @@
 		#size-cells = <1>;
 		ranges = <0 0 0 0xffffffff>;
 		compatible = "simple-bus";
-/*
 
-        blsp2_uart1: qcom,qup_uart@0xa84000 {
+        debug_uart: serial@0xa84000 {
             u-boot,dm-pre-reloc;
 		    compatible = "qcom,msm-geni-uart";
 		    //, "qcom,msm-uartdm";
@@ -60,6 +59,46 @@
     		//linux,phandle = <0x398>;
     		//phandle = <0x398>;
     	};
-    	*/
+
+        muic_i2c14: i2c@a98000 {
+        	#address-cells = <1>;
+        	#size-cells = <0>;
+        	compatible = "i2c-gpio";
+        	status = "ok";
+        	gpios = <
+               	&tlmm 25 0 /* sda */
+        	    &tlmm 26 0 /* scl */
+            >;
+        	i2c-gpio,delay-us = <5>;
+
+        	sm5720@66 {
+        	};
+        };
+
+        tlmm: pinctrl@3400000 {
+			compatible = "qcom,sdm845-pinctrl";
+			reg = <0x03400000 0xc00000>;
+			//interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
+			gpio-controller;
+			#gpio-cells = <2>;
+			//interrupt-controller;
+			//#interrupt-cells = <2>;
+			gpio-ranges = <&tlmm 0 0 150>;
+			//wakeup-parent = <&pdc_intc>;
+
+            muic_i2c: muic_i2c {
+						pins = "gpio25", "gpio26";
+						drive-strength = <0x2>;
+						bias-disable;
+			};
+
+			/* DEBUG UART */
+            qup_uart9_default: qup-uart9-default {
+				pinmux {
+					pins = "gpio4", "gpio5";
+					function = "qup9";
+				};
+			};
+		};
 	};
 };

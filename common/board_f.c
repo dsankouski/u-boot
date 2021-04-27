@@ -956,9 +956,9 @@ static const init_fnc_t init_sequence_f[] = {
 void board_init_f(ulong boot_flags)
 {
     debug_uart_init();
-    while (true) {
-        printch('H');
-    }
+//    while (true) {
+//        printch('H');
+//    }
 	gd->flags = boot_flags;
 	gd->have_console = 0;
 
