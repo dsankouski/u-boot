@@ -22,6 +22,10 @@
 
 /* Serial registers - this driver works in uartdm mode*/
 
+#define UART_OVERSAMPLING	(32)
+
+#define GENI_SER_M_CLK_CFG		(0x48)
+#define GENI_SER_S_CLK_CFG		(0x4C)
 #define SE_GENI_M_CMD0			0x600
 #define SE_GENI_M_IRQ_CLEAR		0x618
 #define SE_GENI_S_IRQ_STATUS		(0x640)
@@ -71,6 +75,10 @@
 #define M_RX_FIFO_LAST_EN	(BIT(27))
 
 
+/* GENI_SER_M_CLK_CFG/GENI_SER_S_CLK_CFG */
+#define SER_CLK_EN			(BIT(0))
+#define CLK_DIV_MSK			(GENMASK(15, 4))
+#define CLK_DIV_SHFT			(4)
 
 
 DECLARE_GLOBAL_DATA_PTR;
@@ -81,6 +89,70 @@ struct msm_serial_data {
 	uint32_t chars_buf; /* buffered chars */
 	uint32_t clk_bit_rate; /* data mover mode bit rate register value */
 };
+
+static int get_clk_cfg(unsigned long clk_freq, unsigned long *ser_clk)
+{
+	unsigned long root_freq[] = {7372800, 14745600, 19200000, 29491200,
+		32000000, 48000000, 64000000, 80000000, 96000000, 100000000};
+	int i;
+	int match = -1;
+
+	for (i = 0; i < ARRAY_SIZE(root_freq); i++) {
+		if (clk_freq > root_freq[i])
+			continue;
+
+		if (!(root_freq[i] % clk_freq)) {
+			match = i;
+			break;
+		}
+	}
+	if (match != -1)
+		*ser_clk = root_freq[match];
+	else
+		pr_err("clk_freq %ld\n", clk_freq);
+	return match;
+}
+
+static int get_clk_div_rate(unsigned int baud, unsigned long *desired_clk_rate)
+{
+	unsigned long ser_clk;
+	int dfs_index;
+	int clk_div = 0;
+
+	*desired_clk_rate = baud * UART_OVERSAMPLING;
+	dfs_index = get_clk_cfg(*desired_clk_rate, &ser_clk);
+	if (dfs_index < 0) {
+		pr_err("%s: Can't find matching DFS entry for baud %d\n",
+								__func__, baud);
+		clk_div = -EINVAL;
+		goto exit_get_clk_div_rate;
+	}
+
+	clk_div = ser_clk / *desired_clk_rate;
+	*desired_clk_rate = ser_clk;
+exit_get_clk_div_rate:
+	return clk_div;
+}
+
+int msm_serial_setbrg(struct udevice *dev, int baudrate)
+{
+    struct msm_serial_data *priv = dev_get_priv(dev);
+
+	u32 clk_div;
+	u32 s_clk_cfg = 0;
+	u64 clk_rate;
+
+    clk_div = get_clk_div_rate(baudrate, &clk_rate);
+
+    s_clk_cfg |= SER_CLK_EN;
+    s_clk_cfg |= (clk_div << CLK_DIV_SHFT);
+
+    writel(s_clk_cfg, priv->base + GENI_SER_M_CLK_CFG);
+	writel(s_clk_cfg, priv->base + GENI_SER_S_CLK_CFG);
+
+	return 0;
+}
+
 
 static void msm_geni_serial_setup_tx(struct udevice *dev,
 				unsigned int xmit_size)
@@ -211,6 +283,7 @@ static const struct dm_serial_ops msm_serial_ops = {
 	.putc = msm_serial_putc,
 //	.pending = msm_serial_pending,
 	.getc = msm_serial_getc,
+	.setbrg = msm_serial_setbrg,
 };
 
 static int msm_uart_clk_init(struct udevice *dev)
