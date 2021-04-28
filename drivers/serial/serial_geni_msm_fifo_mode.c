@@ -38,6 +38,8 @@
 #define SE_UART_TX_TRANS_LEN 0x270
 #define SE_GENI_TX_PACKING_CFG0 0x260
 #define SE_GENI_TX_PACKING_CFG1 0x264
+#define SE_GENI_RX_PACKING_CFG0		0x284
+#define SE_GENI_RX_PACKING_CFG1		0x288
 #define SE_UART_TX_STOP_BIT_LEN		0x26c
 #define SE_UART_TX_WORD_LEN		0x268
 #define SE_UART_RX_WORD_LEN		0x28c
@@ -349,6 +351,11 @@ static inline void _debug_uart_init(void)
 //	geni_se_config_packing(&se, BITS_PER_BYTE, 1, false, true, false);
 	writel(cfg0, base_address + SE_GENI_TX_PACKING_CFG0);
 	writel(cfg1, base_address + SE_GENI_TX_PACKING_CFG1);
+
+//    cfg0 = 0x4380e;
+//    cfg1 = 0xc3e0e;
+    writel(cfg0, base_address + SE_GENI_RX_PACKING_CFG0);
+	writel(cfg1, base_address + SE_GENI_RX_PACKING_CFG1);
 
 //	geni_se_init(&se, DEF_FIFO_DEPTH_WORDS / 2, DEF_FIFO_DEPTH_WORDS - 2);
 //	geni_se_select_mode(&se, GENI_SE_FIFO);
