@@ -66,8 +66,8 @@
         	compatible = "i2c-gpio";
         	status = "ok";
         	gpios = <
-               	&tlmm 25 0 /* sda */
-        	    &tlmm 26 0 /* scl */
+               	&tlmm 33 0 /* sda */
+        	    &tlmm 34 0 /* scl */
             >;
         	i2c-gpio,delay-us = <5>;
 
@@ -78,6 +78,7 @@
         tlmm: pinctrl@3400000 {
 			compatible = "qcom,sdm845-pinctrl";
 			reg = <0x03400000 0xc00000>;
+			gpio-count = 150
 			//interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
 			gpio-controller;
 			#gpio-cells = <2>;
