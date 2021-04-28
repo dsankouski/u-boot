@@ -204,8 +204,6 @@ static int msm_serial_putc(struct udevice *dev, const char ch)
 {
 	struct msm_serial_data *priv = dev_get_priv(dev);
 
-//	msm_geni_serial_setup_tx(dev, 1);
-
     u32 m_cmd = 0;
     writel(DEF_TX_WM, priv->base + SE_GENI_TX_WATERMARK_REG);
 	writel(1, priv->base + SE_UART_TX_TRANS_LEN);
@@ -220,9 +218,6 @@ static int msm_serial_putc(struct udevice *dev, const char ch)
     writel(ch, priv->base + SE_GENI_TX_FIFOn);
     writel(M_TX_FIFO_WATERMARK_EN, priv->base + SE_GENI_M_IRQ_CLEAR);
 
-//  fix setup func and remove above code
-
-//    writel(ch, priv->base + SE_GENI_TX_FIFOn);
     mb();
     /* fix pending func, to remove this code */
     u32 irq_status;
@@ -260,11 +255,6 @@ static int msm_serial_getc(struct udevice *dev)
 	rx_fifo = readl(priv->base + SE_GENI_RX_FIFOn);
 	rx_fifo &= 0xFF;
 	return rx_fifo;
-//	if (!readl(priv->base + SE_GENI_TX_FIFO_STATUS))
-//		return -EAGAIN;
-//
-//	rx_fifo = readl(priv->base + SE_GENI_RX_FIFOn);
-//	return rx_fifo & 0xff;
 }
 
 static int msm_serial_pending(struct udevice *dev, bool input)
@@ -327,13 +317,6 @@ static int msm_serial_probe(struct udevice *dev)
 	struct msm_serial_data *priv = dev_get_priv(dev);
 	debug("Probing serial driver");
 	debug("msm serial base addr: 0x%p", priv->base);
-
-	msm_serial_putc(dev, ' ');
-	msm_serial_putc(dev, 'h');
-	msm_serial_putc(dev, 'e');
-	msm_serial_putc(dev, 'l');
-	msm_serial_putc(dev, 'l');
-	msm_serial_putc(dev, 'o');
 
 	/* No need to reinitialize the UART after relocation */
 	if (gd->flags & GD_FLG_RELOC)
