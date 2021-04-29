@@ -23,6 +23,16 @@
 /* Serial registers - this driver works in uartdm mode*/
 
 #define UART_OVERSAMPLING	(32)
+#define STALE_TIMEOUT		(160)
+#define SE_UART_RX_STALE_CNT		(0x294)
+#define S_GENI_CMD_ABORT	(BIT(1))
+
+#define SE_GENI_S_CMD_CTRL_REG		(0x634)
+#define SE_GENI_M_CMD_CTRL_REG		(0x604)
+
+#define S_CMD_DONE_EN		(BIT(0))
+#define M_CMD_DONE_EN		(BIT(0))
+
 
 #define GENI_SER_M_CLK_CFG		(0x48)
 #define GENI_SER_S_CLK_CFG		(0x4C)
@@ -51,6 +61,12 @@
 #define SE_UART_RX_PARITY_CFG		0x2a8
 #define SE_UART_TX_TRANS_CFG		0x25c
 #define SE_UART_TX_PARITY_CFG		0x2a4
+
+#define GENI_FORCE_DEFAULT_REG		(0x20)
+/* GENI_FORCE_DEFAULT_REG fields */
+#define FORCE_DEFAULT	(BIT(0))
+
+#define S_CMD_ABORT_EN		(BIT(5))
 
 
 #define SE_GENI_S_CMD0			(0x630)
@@ -180,9 +196,25 @@ static void msm_geni_serial_setup_tx(struct udevice *dev,
 
 static void msm_geni_serial_setup_rx(struct udevice *dev)
 {
+    u32 irq_clear = S_CMD_DONE_EN;
     u32 geni_s_irq_en;
 	u32 geni_m_irq_en;
 	struct msm_serial_data *priv = dev_get_priv(dev);
+	irq_clear |= S_CMD_ABORT_EN;
+
+	writel(S_GENI_CMD_ABORT, priv->base + SE_GENI_S_CMD_CTRL_REG);
+	/* Ensure this goes through before polling. */
+    mb();
+    while ((readl(priv->base + SE_GENI_S_CMD_CTRL_REG) & S_GENI_CMD_ABORT)) {}
+	writel(irq_clear, priv->base + SE_GENI_S_IRQ_CLEAR);
+	writel(FORCE_DEFAULT, priv->base + GENI_FORCE_DEFAULT_REG);
+
+//    writel(STALE_TIMEOUT, priv->base + SE_UART_RX_STALE_CNT);
+
+    u32 cfg0 = 0xf;
+    u32 cfg1 = 0x0;
+    writel(cfg0, priv->base + SE_GENI_RX_PACKING_CFG0);
+	writel(cfg1, priv->base + SE_GENI_RX_PACKING_CFG1);
 
 	u32 s_cmd;
 	s_cmd = UART_START_READ << S_OPCODE_SHIFT;
@@ -242,6 +274,7 @@ static int msm_serial_getc(struct udevice *dev)
 
     writel(1 << S_OPCODE_SHIFT, priv->base + SE_GENI_S_CMD0);
 
+    mb();
 
     while (!(readl(priv->base + SE_GENI_M_IRQ_STATUS) & M_SEC_IRQ_EN)) {}
 
@@ -423,6 +456,7 @@ static inline void _debug_uart_init(void)
 	writel(bits_per_char, base_address + SE_UART_TX_WORD_LEN);
 	writel(bits_per_char, base_address + SE_UART_RX_WORD_LEN);
 	writel(stop_bit_len, base_address + SE_UART_TX_STOP_BIT_LEN);
+	mb();
 
 	return 0;
 }

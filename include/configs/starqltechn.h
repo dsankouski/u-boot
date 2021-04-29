@@ -13,7 +13,7 @@
 
 /* Physical Memory Map */
 
-#define PHYS_SDRAM_SIZE			0xC0000000
+#define PHYS_SDRAM_SIZE			0xFE1BFFFF
 #define PHYS_SDRAM_1			0x80000000
 #define PHYS_SDRAM_1_SIZE		0x80000000
 #define PHYS_SDRAM_2			0x100000000

@@ -4,6 +4,7 @@
  *
  * (C) Copyright 2015 Mateusz Kulikowski <mateusz.kulikowski@gmail.com>
  */
+#define DEBUG
 
 #include <common.h>
 #include <dm.h>

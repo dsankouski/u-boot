@@ -19,7 +19,13 @@ static struct mm_region sdm845_mem_map[] = {
 	}, {
 		.virt = 0x80000000UL, /* DDR */
 		.phys = 0x80000000UL, /* DDR */
-		.size = 0x100000000UL,
+		.size = 0x80000000UL,
+		.attrs = PTE_BLOCK_MEMTYPE(MT_NORMAL) |
+			 PTE_BLOCK_INNER_SHARE
+	}, {
+		.virt = 0x100000000UL, /* DDR */
+		.phys = 0x100000000UL, /* DDR */
+		.size = 0x80000000UL,
 		.attrs = PTE_BLOCK_MEMTYPE(MT_NORMAL) |
 			 PTE_BLOCK_INNER_SHARE
 	}, {
