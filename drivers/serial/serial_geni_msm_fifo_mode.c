@@ -169,6 +169,44 @@ int msm_serial_setbrg(struct udevice *dev, int baudrate)
 	return 0;
 }
 
+static bool qcom_geni_serial_poll_bit(struct udevice *dev,
+				int offset, int field, bool set)
+{
+	u32 reg;
+	struct msm_serial_data *priv = dev_get_priv(dev);
+	unsigned int baud;
+	unsigned int fifo_bits;
+	unsigned long timeout_us = 20000;
+			baud = 115200;
+
+//	if (uport->private_data) {
+//		port = to_dev_port(uport, uport);
+//		baud = port->baud;
+//		if (!baud)
+//			baud = 115200;
+//		fifo_bits = port->tx_fifo_depth * port->tx_fifo_width;
+//		/*
+//		 * Total polling iterations based on FIFO worth of bytes to be
+//		 * sent at current baud. Add a little fluff to the wait.
+//		 */
+//		timeout_us = ((fifo_bits * USEC_PER_SEC) / baud) + 500;
+//	}
+
+	/*
+	 * Use custom implementation instead of readl_poll_atomic since ktimer
+	 * is not ready at the time of early console.
+	 */
+	timeout_us = DIV_ROUND_UP(timeout_us, 10) * 10;
+	while (timeout_us) {
+		reg = readl(priv->base + offset);
+		if ((bool)(reg & field) == set)
+			return true;
+		udelay(10);
+		timeout_us -= 10;
+	}
+	return false;
+}
+
 
 static void msm_geni_serial_setup_tx(struct udevice *dev,
 				unsigned int xmit_size)
@@ -182,10 +220,9 @@ static void msm_geni_serial_setup_tx(struct udevice *dev,
 	writel(m_cmd, priv->base + SE_GENI_M_CMD0);
 	mb();
     u32 watermark_irq;
-    do {
-        watermark_irq = readl(priv->base + SE_GENI_M_IRQ_STATUS);
-    }
-    while (!(watermark_irq & M_TX_FIFO_WATERMARK_EN));
+    qcom_geni_serial_poll_bit(dev, SE_GENI_M_IRQ_STATUS,
+    				M_TX_FIFO_WATERMARK_EN, true);
+
     writel(M_TX_FIFO_WATERMARK_EN, priv->base + SE_GENI_M_IRQ_CLEAR);
 	/*
 	 * Writes to enable the primary sequencer should go through before
@@ -205,7 +242,8 @@ static void msm_geni_serial_setup_rx(struct udevice *dev)
 	writel(S_GENI_CMD_ABORT, priv->base + SE_GENI_S_CMD_CTRL_REG);
 	/* Ensure this goes through before polling. */
     mb();
-    while ((readl(priv->base + SE_GENI_S_CMD_CTRL_REG) & S_GENI_CMD_ABORT)) {}
+    qcom_geni_serial_poll_bit(dev, SE_GENI_S_CMD_CTRL_REG,
+    					S_GENI_CMD_ABORT, false);
 	writel(irq_clear, priv->base + SE_GENI_S_IRQ_CLEAR);
 	writel(FORCE_DEFAULT, priv->base + GENI_FORCE_DEFAULT_REG);
 
@@ -242,21 +280,15 @@ static int msm_serial_putc(struct udevice *dev, const char ch)
 	m_cmd |= (UART_START_TX << M_OPCODE_SHIFT);
 	writel(m_cmd, priv->base + SE_GENI_M_CMD0);
 	mb();
-    u32 watermark_irq;
-    do {
-        watermark_irq = readl(priv->base + SE_GENI_M_IRQ_STATUS);
-    }
-    while (!(watermark_irq & M_TX_FIFO_WATERMARK_EN));
+	qcom_geni_serial_poll_bit(dev, SE_GENI_M_IRQ_STATUS,
+    				M_TX_FIFO_WATERMARK_EN, true);
+
     writel(ch, priv->base + SE_GENI_TX_FIFOn);
     writel(M_TX_FIFO_WATERMARK_EN, priv->base + SE_GENI_M_IRQ_CLEAR);
 
     mb();
-    /* fix pending func, to remove this code */
-    u32 irq_status;
-    do {
-        irq_status = readl(priv->base + SE_GENI_M_IRQ_STATUS);
-    }
-    while (!(irq_status & M_CMD_DONE_EN));
+    qcom_geni_serial_poll_bit(dev, SE_GENI_M_IRQ_STATUS,
+    						M_CMD_DONE_EN, true);
     u32 irq_clear = M_CMD_DONE_EN;
     writel(irq_clear, priv->base + SE_GENI_M_IRQ_CLEAR);
     mb();
@@ -276,13 +308,15 @@ static int msm_serial_getc(struct udevice *dev)
 
     mb();
 
-    while (!(readl(priv->base + SE_GENI_M_IRQ_STATUS) & M_SEC_IRQ_EN)) {}
+    qcom_geni_serial_poll_bit(dev, SE_GENI_M_IRQ_STATUS,
+    			M_SEC_IRQ_EN, true);
 
     m_irq_status = readl(priv->base + SE_GENI_M_IRQ_STATUS);
     s_irq_status = readl(priv->base + SE_GENI_S_IRQ_STATUS);
     writel(m_irq_status, priv->base + SE_GENI_M_IRQ_CLEAR);
     writel(s_irq_status, priv->base + SE_GENI_S_IRQ_CLEAR);
-    while (!(readl(priv->base + SE_GENI_RX_FIFO_STATUS) & RX_FIFO_WC_MSK)) {}
+    qcom_geni_serial_poll_bit(dev, SE_GENI_RX_FIFO_STATUS,
+    			RX_FIFO_WC_MSK, true);
 
     mb();
 	rx_fifo = readl(priv->base + SE_GENI_RX_FIFOn);
