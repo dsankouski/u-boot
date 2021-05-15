@@ -21,7 +21,7 @@
 	};
 
 	chosen {
-		stdout-path = "serial0:115200n8";
+		stdout-path = "serial0:921600n8";
 	};
 
 	memory {
@@ -75,8 +75,21 @@
         	};
         };
 
-        tlmm: pinctrl@3400000 {
+        gpio: gpio@3400000 {
 			compatible = "qcom,sdm845-pinctrl";
+			reg = <0x03400000 0xc00000>;
+			gpio-count = <150>;
+			//interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
+			gpio-controller;
+			#gpio-cells = <2>;
+			//interrupt-controller;
+			//#interrupt-cells = <2>;
+			gpio-ranges = <&tlmm 0 0 150>;
+			//wakeup-parent = <&pdc_intc>;
+		};
+
+        tlmm: pinctrl@3400000 {
+			compatible = "qcom,tlmm-sdm845";
 			reg = <0x03400000 0xc00000>;
 			gpio-count = <150>;
 			//interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
