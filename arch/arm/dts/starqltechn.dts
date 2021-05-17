@@ -66,8 +66,8 @@
         	compatible = "i2c-gpio";
         	status = "ok";
         	gpios = <
-               	&tlmm 33 0 /* sda */
-        	    &tlmm 34 0 /* scl */
+               	&gpio 33 0 /* sda */
+        	    &gpio 34 0 /* scl */
             >;
         	i2c-gpio,delay-us = <5>;
 
@@ -76,43 +76,67 @@
         };
 
         gpio: gpio@3400000 {
+			#gpio-cells = <2>;
 			compatible = "qcom,sdm845-pinctrl";
 			reg = <0x03400000 0xc00000>;
 			gpio-count = <150>;
-			//interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
 			gpio-controller;
-			#gpio-cells = <2>;
-			//interrupt-controller;
-			//#interrupt-cells = <2>;
-			gpio-ranges = <&tlmm 0 0 150>;
-			//wakeup-parent = <&pdc_intc>;
+			gpio-ranges = <&gpio 0 0 150>;
+			/*
+			power button:
+			volup 0x32
+			voldown
+			bixby
+
+
+			.dir_conn_reg = (base == NORTH) ? base + 0xa4000 : \
+            			((base == SOUTH) ? base + 0xa8000 : base + 0x9e000), \
+			*/
 		};
 
-        tlmm: pinctrl@3400000 {
-			compatible = "qcom,tlmm-sdm845";
-			reg = <0x03400000 0xc00000>;
-			gpio-count = <150>;
-			//interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
-			gpio-controller;
-			#gpio-cells = <2>;
-			//interrupt-controller;
-			//#interrupt-cells = <2>;
-			gpio-ranges = <&tlmm 0 0 150>;
-			//wakeup-parent = <&pdc_intc>;
+        spmi@c440000 {
+			compatible = "qcom,spmi-pmic-arb";
+			reg = <0xc440000 0x1100>,
+			      <0xc600000 0x2000000>,
+			      <0xe600000 0x100000>,
+			      <0xe700000 0xa0000>,
+			      <0xc40a000 0x26000>;
+			reg-names = "core", "chnls", "obsrvr", "intr", "cnfg";
+			#address-cells = <0x2>;
+			#size-cells = <0x0>;
 
-            muic_i2c: muic_i2c {
-						pins = "gpio25", "gpio26";
-						drive-strength = <0x2>;
-						bias-disable;
-			};
+			pmic0: pm8998@0 {
+				compatible = "qcom,spmi-pmic";
+                reg = <0x0 0x0>;
+                #address-cells = <0x2>;
+				#size-cells = <0x0>;
 
-			/* DEBUG UART */
-            qup_uart9_default: qup-uart9-default {
-				pinmux {
-					pins = "gpio4", "gpio5";
-					function = "qup9";
+				pm8998_pon: pm8998_pon@800 {
+					compatible = "qcom,pm8998-pwrkey";
+					reg = <0x800 0x100>;
+					#gpio-cells = <2>;
+					gpio-controller;
+					gpio-bank-name="pm8998_key.";
+				};
+
+				pm8998_gpios: pm8998_gpios@c000 {
+					compatible = "qcom,pm8998-gpio";
+					reg = <0xc000 0x1a00>;
+					gpio-controller;
+					gpio-count = <24>;
+					#gpio-cells = <2>;
+					gpio-bank-name="pm8998.";
 				};
 			};
+
+            pmic1: pm8998@1 {
+				compatible = "qcom,spmi-pmic";
+				reg = <0x1 0x0>;
+				#address-cells = <0x2>;
+				#size-cells = <0x0>;
+			};
 		};
+
+
 	};
 };

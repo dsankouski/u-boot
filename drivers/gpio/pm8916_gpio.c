@@ -202,6 +202,7 @@ static int pm8916_gpio_ofdata_to_platdata(struct udevice *dev)
 static const struct udevice_id pm8916_gpio_ids[] = {
 	{ .compatible = "qcom,pm8916-gpio" },
 	{ .compatible = "qcom,pm8994-gpio" },	/* 22 GPIO's */
+	{ .compatible = "qcom,pm8998-gpio" },
 	{ }
 };
 
