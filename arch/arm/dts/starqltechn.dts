@@ -75,13 +75,14 @@
         	};
         };
 
-        gpio: gpio@3400000 {
+        gpio: gpio_north@3900000 {
 			#gpio-cells = <2>;
 			compatible = "qcom,sdm845-pinctrl";
-			reg = <0x03400000 0xc00000>;
+			reg = <0x3900000 0x400000>;
 			gpio-count = <150>;
 			gpio-controller;
 			gpio-ranges = <&gpio 0 0 150>;
+			gpio-bank-name = "soc_north";
 			/*
 			power button:
 			volup 0x32
