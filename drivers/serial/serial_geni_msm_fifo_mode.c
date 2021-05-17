@@ -176,7 +176,7 @@ static bool qcom_geni_serial_poll_bit(struct udevice *dev,
 	struct msm_serial_data *priv = dev_get_priv(dev);
 	unsigned int baud;
 	unsigned int fifo_bits;
-	unsigned long timeout_us = 20000;
+	unsigned long timeout_us = 10000;
 			baud = 115200;
 
 //	if (uport->private_data) {
@@ -448,6 +448,7 @@ U_BOOT_DRIVER(serial_msm) = {
 static inline void _debug_uart_init(void)
 {
     u32 base_address = CONFIG_DEBUG_UART_BASE;
+    u32 baudrate = CONFIG_DEBUG_UART_CLOCK;
     u32 tx_trans_cfg;
 	u32 tx_parity_cfg = 0;	/* Disable Tx Parity */
 	u32 rx_trans_cfg = 0;
@@ -464,6 +465,20 @@ static inline void _debug_uart_init(void)
 
     u32 cfg0 = 0xf;
     u32 cfg1 = 0x0;
+
+//   ################
+    u32 clk_div;
+	u32 s_clk_cfg = 0;
+	u64 clk_rate;
+
+    clk_div = get_clk_div_rate(baudrate, &clk_rate);
+
+    s_clk_cfg |= SER_CLK_EN;
+    s_clk_cfg |= (clk_div << CLK_DIV_SHFT);
+
+    writel(s_clk_cfg, base_address + GENI_SER_M_CLK_CFG);
+	writel(s_clk_cfg, base_address + GENI_SER_S_CLK_CFG);
+//   ################
 
 	/*
 	 * Make an unconditional cancel on the main sequencer to reset
