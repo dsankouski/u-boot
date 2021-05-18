@@ -23,6 +23,7 @@ static const char * const msm_pinctrl_pins[] = {
 
 static const struct pinctrl_function msm_pinctrl_functions[] = {
 	{"qup9", 2},
+	{"gpio", 0},
 };
 
 static const char *sdm845_get_function_name(struct udevice *dev,
@@ -48,7 +49,7 @@ static unsigned int sdm845_get_function_mux(unsigned int selector)
 }
 
 struct msm_pinctrl_data sdm845_data = {
-	.pin_count = 157,
+	.pin_count = 150,
 	.functions_count = ARRAY_SIZE(msm_pinctrl_functions),
 	.get_function_name = sdm845_get_function_name,
 	.get_function_mux = sdm845_get_function_mux,

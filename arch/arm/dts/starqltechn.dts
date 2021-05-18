@@ -60,11 +60,12 @@
     		//phandle = <0x398>;
     	};
 
-        muic_i2c14: i2c@a98000 {
+        muic_i2c14: i2c14 {
         	#address-cells = <1>;
         	#size-cells = <0>;
         	compatible = "i2c-gpio";
-        	status = "ok";
+        	pinctrl-names = "muic";
+        	pinctrl-0 = <&muic_i2c>;
         	gpios = <
                	&gpio 33 0 /* sda */
         	    &gpio 34 0 /* scl */
@@ -95,49 +96,31 @@
 			*/
 		};
 
-        spmi@c440000 {
-			compatible = "qcom,spmi-pmic-arb";
-			reg = <0xc440000 0x1100>,
-			      <0xc600000 0x2000000>,
-			      <0xe600000 0x100000>,
-			      <0xe700000 0xa0000>,
-			      <0xc40a000 0x26000>;
-			reg-names = "core", "chnls", "obsrvr", "intr", "cnfg";
-			#address-cells = <0x2>;
-			#size-cells = <0x0>;
+        tlmm: pinctrl@3900000 {
+			compatible = "qcom,tlmm-sdm845";
+			reg = <0x03900000 0x400000>;
+			gpio-count = <150>;
+			gpio-controller;
+			#gpio-cells = <2>;
+			gpio-ranges = <&tlmm 0 0 150>;
 
-			pmic0: pm8998@0 {
-				compatible = "qcom,spmi-pmic";
-                reg = <0x0 0x0>;
-                #address-cells = <0x2>;
-				#size-cells = <0x0>;
-
-				pm8998_pon: pm8998_pon@800 {
-					compatible = "qcom,pm8998-pwrkey";
-					reg = <0x800 0x100>;
-					#gpio-cells = <2>;
-					gpio-controller;
-					gpio-bank-name="pm8998_key.";
-				};
-
-				pm8998_gpios: pm8998_gpios@c000 {
-					compatible = "qcom,pm8998-gpio";
-					reg = <0xc000 0x1a00>;
-					gpio-controller;
-					gpio-count = <24>;
-					#gpio-cells = <2>;
-					gpio-bank-name="pm8998.";
-				};
+            muic_i2c: muic_i2c {
+                        pins = "GPIO_33", "GPIO_34";
+						drive-strength = <0x2>;
+						function = "gpio";
+						bias-disable;
 			};
 
-            pmic1: pm8998@1 {
-				compatible = "qcom,spmi-pmic";
-				reg = <0x1 0x0>;
-				#address-cells = <0x2>;
-				#size-cells = <0x0>;
+			/* DEBUG UART */
+            /*
+            qup_uart9_default: qup-uart9-default {
+				pinmux {
+					pins = "gpio4", "gpio5";
+					function = "qup9";
+				};
 			};
+			*/
 		};
-
 
 	};
 };
