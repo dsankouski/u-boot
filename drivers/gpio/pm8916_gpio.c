@@ -5,6 +5,8 @@
  * (C) Copyright 2015 Mateusz Kulikowski <mateusz.kulikowski@gmail.com>
  */
 
+#define DEBUG
+
 #include <common.h>
 #include <dm.h>
 #include <log.h>
@@ -168,6 +170,7 @@ static const struct dm_gpio_ops pm8916_gpio_ops = {
 
 static int pm8916_gpio_probe(struct udevice *dev)
 {
+    debug("probing pmic gpios");
 	struct pm8916_gpio_bank *priv = dev_get_priv(dev);
 	int reg;
 
@@ -254,6 +257,7 @@ static const struct dm_gpio_ops pm8941_pwrkey_ops = {
 
 static int pm8941_pwrkey_probe(struct udevice *dev)
 {
+    debug("probing pwrkey driver");
 	struct pm8916_gpio_bank *priv = dev_get_priv(dev);
 	int reg;
 
@@ -262,13 +266,15 @@ static int pm8941_pwrkey_probe(struct udevice *dev)
 		return log_msg_ret("bad address", -EINVAL);
 
 	/* Do a sanity check */
+    debug("sanity check");
 	reg = pmic_reg_read(dev->parent, priv->pid + REG_TYPE);
 	if (reg != 0x1)
 		return log_msg_ret("bad type", -ENXIO);
 
 	reg = pmic_reg_read(dev->parent, priv->pid + REG_SUBTYPE);
-	if (reg != 0x1)
+	if ((reg & 0x5) == 0)
 		return log_msg_ret("bad subtype", -ENXIO);
+    debug("sanity check done");
 
 	return 0;
 }
@@ -288,6 +294,7 @@ static int pm8941_pwrkey_ofdata_to_platdata(struct udevice *dev)
 static const struct udevice_id pm8941_pwrkey_ids[] = {
 	{ .compatible = "qcom,pm8916-pwrkey" },
 	{ .compatible = "qcom,pm8994-pwrkey" },
+	{ .compatible = "qcom,pm8998-pwrkey" },
 	{ }
 };
 
