@@ -60,7 +60,7 @@
     		//phandle = <0x398>;
     	};
 
-        muic_i2c14: i2c14 {
+        muic_i2c14: i2c-14 {
         	#address-cells = <1>;
         	#size-cells = <0>;
         	compatible = "i2c-gpio";
