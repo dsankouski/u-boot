@@ -34,10 +34,49 @@ static const struct pll_vote_clk gpll0_vote_clk = {
 	.vote_bit = APCS_GPLL_ENA_VOTE_GPLL0,
 };
 
-static struct vote_clk gcc_blsp2_ahb_clk = {
-	.cbcr_reg = BLSP2_AHB_CBCR,
-	.ena_vote = APCS_CLOCK_BRANCH_ENA_VOTE,
-	.vote_bit = BIT(15),
+#define F(f, s, h, m, n) { (f), (s), (2 * (h) - 1), (m), (n) }
+
+struct freq_tbl {
+	uint freq;
+	uint src;
+	u8 pre_div;
+	u16 m;
+	u16 n;
+};
+
+const struct freq_tbl *qcom_find_freq(const struct freq_tbl *f, uint rate)
+{
+	if (!f)
+		return NULL;
+
+	if (!f->freq)
+		return f;
+
+	for (; f->freq; f++)
+		if (rate <= f->freq)
+			return f;
+
+	/* Default to our fastest rate */
+	return f - 1;
+}
+
+static const struct freq_tbl ftbl_gcc_qupv3_wrap0_s0_clk_src[] = {
+	F(7372800, CFG_CLK_SRC_GPLL0_EVEN, 1, 384, 15625),
+	F(14745600, CFG_CLK_SRC_GPLL0_EVEN, 1, 768, 15625),
+	F(19200000, CFG_CLK_SRC_CXO, 1, 0, 0),
+	F(29491200, CFG_CLK_SRC_GPLL0_EVEN, 1, 1536, 15625),
+	F(32000000, CFG_CLK_SRC_GPLL0_EVEN, 1, 8, 75),
+	F(48000000, CFG_CLK_SRC_GPLL0_EVEN, 1, 4, 25),
+	F(64000000, CFG_CLK_SRC_GPLL0_EVEN, 1, 16, 75),
+	F(80000000, CFG_CLK_SRC_GPLL0_EVEN, 1, 4, 15),
+	F(96000000, CFG_CLK_SRC_GPLL0_EVEN, 1, 8, 25),
+	F(100000000, CFG_CLK_SRC_GPLL0_EVEN, 3, 0, 0),
+	F(102400000, CFG_CLK_SRC_GPLL0_EVEN, 1, 128, 375),
+	F(112000000, CFG_CLK_SRC_GPLL0_EVEN, 1, 28, 75),
+	F(117964800, CFG_CLK_SRC_GPLL0_EVEN, 1, 6144, 15625),
+	F(120000000, CFG_CLK_SRC_GPLL0_EVEN, 2.5, 0, 0),
+	F(128000000, CFG_CLK_SRC_GPLL0, 1, 16, 75),
+	{ }
 };
 
 static int clk_init_sdc(struct msm_clk_priv *priv, uint rate)
@@ -61,20 +100,26 @@ static const struct bcr_regs uart2_regs = {
 	.D = BLSP2_UART2_APPS_D,
 };
 
-static int clk_init_uart(struct msm_clk_priv *priv)
+static int clk_init_uart(struct msm_clk_priv *priv, uint rate)
 {
 	/* Enable AHB clock */
-	clk_enable_vote_clk(priv->base, &gcc_blsp2_ahb_clk);
+//	clk_enable_vote_clk(priv->base, &gcc_blsp2_ahb_clk);
 
-	/* 7372800 uart block clock @ GPLL0 */
-	clk_rcg_set_rate_mnd(priv->base, &uart2_regs, 1, 192, 15625,
-			     CFG_CLK_SRC_GPLL0);
+	struct freq_tbl *freq = qcom_find_freq(ftbl_gcc_qupv3_wrap0_s0_clk_src, rate);
+	clk_rcg_set_rate_mnd(
+	    priv->base,
+	    &uart2_regs,
+	    freq->pre_div,
+	    freq->m,
+	    freq->n,
+			     freq->src
+			     );
 
 	/* Vote for gpll0 clock */
-	clk_enable_gpll0(priv->base, &gpll0_vote_clk);
+//	clk_enable_gpll0(priv->base, &gpll0_vote_clk);
 
 	/* Enable core clk */
-	clk_enable_cbc(priv->base + BLSP2_UART2_APPS_CBCR);
+//	clk_enable_cbc(priv->base + BLSP2_UART2_APPS_CBCR);
 
 	return 0;
 }
@@ -87,8 +132,8 @@ ulong msm_set_rate(struct clk *clk, ulong rate)
 	case 0: /* SDC1 */
 		return clk_init_sdc(priv, rate);
 		break;
-	case 4: /*UART2*/
-		return clk_init_uart(priv);
+	case 0x58: /*UART2*/
+		return clk_init_uart(priv, rate);
 	default:
 		return 0;
 	}

@@ -150,6 +150,35 @@ exit_get_clk_div_rate:
 	return clk_div;
 }
 
+int msm_serial_set_clock_rate(struct udevice *dev, u64 rate) {
+	uint clkd[2]; /* clk_id and clk_no */
+	int clk_offset;
+	struct udevice *clk_dev;
+	struct clk *clk;
+	int ret;
+
+	ret = fdtdec_get_int_array(gd->fdt_blob, dev_of_offset(dev), "clocks",
+				   clkd, 2);
+	if (ret)
+		return ret;
+
+	clk_offset = fdt_node_offset_by_phandle(gd->fdt_blob, clkd[0]);
+	if (clk_offset < 0)
+		return clk_offset;
+
+	ret = uclass_get_device_by_of_offset(UCLASS_CLK, clk_offset, &clk_dev);
+	if (ret)
+		return ret;
+
+    ret = clk_get_by_name(dev, "se-clk", &clk);
+    if (ret)
+		return ret;
+
+	ret = clk_set_rate(&clk, rate);
+	return ret;
+}
+
+
 int msm_serial_setbrg(struct udevice *dev, int baudrate)
 {
     struct msm_serial_data *priv = dev_get_priv(dev);
@@ -159,6 +188,7 @@ int msm_serial_setbrg(struct udevice *dev, int baudrate)
 	u64 clk_rate;
 
     clk_div = get_clk_div_rate(baudrate, &clk_rate);
+   msm_serial_set_clock_rate(dev, clk_rate);
 
     s_clk_cfg |= SER_CLK_EN;
     s_clk_cfg |= (clk_div << CLK_DIV_SHFT);
@@ -389,8 +419,9 @@ static int msm_serial_probe(struct udevice *dev)
 	if (gd->flags & GD_FLG_RELOC)
 		return 0;
 
+		msm_serial_set_clock_rate(dev, 7372800);
 	msm_geni_serial_setup_rx(dev);
-	
+
 	u32 geni_s_irq_en;
     u32 geni_m_irq_en;
 	geni_s_irq_en = readl(priv->base + SE_GENI_S_IRQ_EN);
@@ -401,6 +432,8 @@ static int msm_serial_probe(struct udevice *dev)
 
     		writel(geni_s_irq_en, priv->base + SE_GENI_S_IRQ_EN);
     		writel(geni_m_irq_en, priv->base + SE_GENI_M_IRQ_EN);
+
+//        msm_serial_setbrg(dev, 460800);
 
 //	ret = msm_uart_clk_init(dev);
 //	if (ret)
