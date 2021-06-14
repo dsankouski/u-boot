@@ -56,9 +56,8 @@
     		reg-names = "se_phys";
     		clock-names = "se-clk";
     		clocks = <&gcc 0x58>;
-    		//pinctrl-names = "default", "sleep";
-    		//pinctrl-0 = <0x88>;
-    		//pinctrl-1 = <0x89>;
+    		pinctrl-names = "default";
+    		pinctrl-0 = <&qup_uart9>;
     		qcom,wrapper-core = <0x8a>;
     		status = "ok";
     	};
@@ -116,14 +115,12 @@
 			};
 
 			/* DEBUG UART */
-            /*
-            qup_uart9_default: qup-uart9-default {
+            qup_uart9: qup-uart9-default {
 				pinmux {
-					pins = "gpio4", "gpio5";
+					pins = "GPIO_4", "GPIO_5";
 					function = "qup9";
 				};
 			};
-			*/
 		};
 
         spmi@c440000 {
